@@ -1,5 +1,5 @@
 import React from "react"
-import stateful from "./stateful"
+import { stateful } from "./Stateful"
 
 function Normal(
   props,

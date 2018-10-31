@@ -1,52 +1,66 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import stateful, { useState, useEffect } from "./stateful"
-import NormalStyle from "./NormalStyle"
-import HookStyle from "./HookStyle"
-import CustomHookStyle from "./CustomHookStyle"
-import CustomNormalStyle from "./CustomNormalStyle"
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Stateful, { useState, useEffect } from './Stateful'
+import NormalStyle from './NormalStyle'
+import HookStyle from './HookStyle'
+import CustomHookStyle from './CustomHookStyle'
+import CustomNormalStyle from './CustomNormalStyle'
+import StatefulRenderPropStyle from './StatefulRenderPropStyle'
+import RenderPropHookStyle from './RenderPropHookStyle'
 
 const styles = {
-  normal: NormalStyle,
-  hook: HookStyle,
-  custom: CustomHookStyle,
-  customNormal: CustomNormalStyle
+	NormalStyle,
+	HookStyle,
+	CustomHookStyle,
+	CustomNormalStyle,
+	StatefulRenderPropStyle,
+	RenderPropHookStyle
+}
+
+function Menu() {
+	return (
+		<div>
+			{Object.keys(styles).map((name, index) => {
+				return (
+					<a
+						key={name}
+						href={`#${name}`}
+						style={{ display: 'inline-block', marginLeft: 10 }}
+					>
+						{index + 1}.{name}
+					</a>
+				)
+			})}
+		</div>
+	)
 }
 
 const useHash = () => {
-  let [hash = window.location.hash, setHash] = useState()
-  useEffect(() => {
-    let handleHashChange = () => setHash(window.location.hash)
-    window.addEventListener("hashchange", handleHashChange)
-    return () => window.removeEventListener("hashchange", handleHashChange)
-  })
-  return hash.slice(1)
+	let [hash = window.location.hash, setHash] = useState()
+	useEffect(() => {
+		let handleHashChange = () => setHash(window.location.hash)
+		window.addEventListener('hashchange', handleHashChange)
+		return () => window.removeEventListener('hashchange', handleHashChange)
+	})
+	return hash.slice(1)
 }
 
 function App() {
-  let style = useHash() || "normal"
-  let Target = styles[style] || NormalStyle
-  return (
-    <React.Fragment>
-      <h1>Style {style}</h1>
-      <div>
-        {Object.keys(styles).map(name => {
-          return (
-            <a
-              key={name}
-              href={`#${name}`}
-              style={{ display: "inline-block", marginLeft: 10 }}
-            >
-              {name}
-            </a>
-          )
-        })}
-      </div>
-      <Target />
-    </React.Fragment>
-  )
+	return (
+		<Stateful>
+			{() => {
+				let style = useHash() || 'NormalStyle'
+				let Target = styles[style] || NormalStyle
+				return (
+					<React.Fragment>
+						<h1>Style {style}</h1>
+						<Menu />
+						<Target />
+					</React.Fragment>
+				)
+			}}
+		</Stateful>
+	)
 }
 
-const StatefulApp = stateful(App)
-
-ReactDOM.render(<StatefulApp />, document.getElementById("root"))
+ReactDOM.render(<App />, document.getElementById('root'))
